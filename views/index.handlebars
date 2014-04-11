@@ -32,6 +32,8 @@
       // (2) it is a bad experience to be continually prompted to login upon page load.
       FB.login(function(response) {
         // handle the response
+        testAPI();
+        
       }, {scope: 'user_status'});
     } else {
       // In this case, the person is not logged into Facebook, so we call the login() 
@@ -41,6 +43,7 @@
       // The same caveats as above apply to the FB.login() call here.
       FB.login(function(response) {
         // handle the response
+        testAPI();
       }, {scope: 'user_status'});
     }
   });
@@ -67,6 +70,18 @@
 function logout(){
   FB.logout(function(response){});
 }
+
+function getUserInfo() {
+  FB.api(
+          "/me",
+          function (response) {
+            if (response && !response.error) {
+              /* handle the results */
+            }
+        });
+}
+
+
 </script>
 
 <!--
@@ -76,6 +91,8 @@ function logout(){
 <fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
 
 <button onclick="logout()">log out</button>
+
+
 
 </body>
 </html>
