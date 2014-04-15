@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
 
 //routes
-app.get('/', index.view);
+app.all('/', index.view);
 
 //set environment ports and start application
 app.set('port', process.env.PORT || 3000);
