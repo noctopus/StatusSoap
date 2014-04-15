@@ -124,7 +124,7 @@
 
     FB.api('/me/posts', function(response) {
       console.log(response);
-      FB.api("/me/status", function(response2){
+      FB.api("/me/statuses", function(response2){
         console.log(response2, "STATUS");
         var data = response.data.concat(response2.data);
         console.log(data);
