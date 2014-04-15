@@ -134,7 +134,7 @@
   }
 
   function displayPost(response) {
-    response = response.filter(function(element){return (element.type == "status" || element.type == "photo")})
+   // response = response.filter(function(element){return (element.type == "status" || element.type == "photo")})
 
     for (var i = 0; i < response.length; i++) {
       if (response[i].story != null) {
