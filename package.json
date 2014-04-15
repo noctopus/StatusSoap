@@ -1,7 +1,7 @@
 {
-  "name": "Boilerplate",
+  "name": "Status Soap",
   "version": "0.0.1",
-  "author": "Chu Shao",
+  "author": "Kandice Wong, Thomas Nguyen",
   "scripts": {
     "start": "node app.js"
   },
