@@ -22,7 +22,9 @@
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
     <div data-bind = "text:from.name"></div>
-    <div data-bind = "text:date"></div>
+    <!-- ko if:created_time -->
+    <div data-bind = "text:created_time"></div>
+    <!-- /ko -->
     <div data-bind = "highlight:text"></div>
   </div>
 </div>
