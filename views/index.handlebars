@@ -124,7 +124,10 @@
 
     FB.api('/me/posts', function(response) {
       console.log(response);
-      displayPost(response.data);
+      FB.api("/me/feed", function(response2){
+        var data = response.data.concat(response2.data);
+        displayPost(response.data);
+      }, {perms : 'read_stream'});
     }, {perms: 'read_stream'})
   }
 
