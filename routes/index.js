@@ -8,15 +8,39 @@ var twitter = new twitterAPI({
 
 exports.view = function(req, res) {
 	if(req.query.oauth_token != null && req.query.oauth_verifier != null){
-		twitter.getAccessToken(req.session.token, req.session.secret, req.query.oath_verifier,
+
+		twitter.getAccessToken(req.session.token, req.session.secret, req.query.oauth_verifier,
 			function(error, accessToken, accessTokenSecret, results){
+				console.log();
+				console.log(req.query, req.session, "SESSIONS");
+				console.log();
+				console.log(accessToken, accessTokenSecret, "ACCESSTOKENS");
+				console.log();
+				console.log(error, results, "RESULTS/ERROR");
+				console.log();
+
 				req.session.accessToken = accessToken;
 				req.session.accessSecret = accessTokenSecret;
-				res.render('index', {accessToken : accessToken, accessSecret : accessTokenSecret});
+				twitter.getTimeline("home", {}, req.session.accessToken, req.session.accessSecret, function(error, data, response){
+					console.log(error, data, response);
+					res.render("index", {tweets : data});
+				});
 			});
+
 	}else{
-		res.render('index');
+
+		console.log(req.session, "NEW SESSION")
+		console.log();
+		if(req.session.accessToken != null && req.session.accessSecret != null){
+			twitter.getTimeline("home", {}, req.session.accessToken, req.session.accessSecret, function(error, data, response){
+				res.render("index", {tweets : data});
+			});
+		}else{
+			res.render("index", {tweets : "NONE"});
+		}
+
 	}
+
 }
 
 exports.viewFB = function(req, res){
