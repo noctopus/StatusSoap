@@ -142,6 +142,8 @@
       }
       else if (response[i].message != null) {
         response[i].text = response[i].message;
+      }else if(response[i].description != null){
+        response[i].text = response[i].description;
       }
       //response[i].dateStr = new Date(response[i].created_time).toUTCString();
 
