@@ -22,7 +22,7 @@
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
     <div data-bind = "text:from.name"></div>
-    <div data-bind = "text:created_time"></div>
+    <div data-bind = "text:date"></div>
     <div data-bind = "highlight:text"></div>
   </div>
 </div>
@@ -144,6 +144,11 @@
         response[i].text = response[i].message;
       }else if(response[i].description != null){
         response[i].text = response[i].description;
+      }
+      if(response[i].created_time == null){
+        response[i].time = "";
+      }else{
+        response[i].time=response[i].created_time;
       }
       //response[i].dateStr = new Date(response[i].created_time).toUTCString();
 
