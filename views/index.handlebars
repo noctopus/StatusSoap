@@ -22,6 +22,9 @@
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
     <div data-bind = "text:from.name"></div>
+    <div data-bind="if:created_time">
+      <div data-bind="text : created_time"></div>
+    </div>
     <div data-bind = "highlight:text"></div>
   </div>
 </div>
@@ -159,7 +162,7 @@
       var searchquery = viewModel.searchQuery().split(",");
       var msg = value();
       for(var i = 0; i < searchquery.length; i++){
-        var index = msg.indexOf(searchquery[i]);
+        var index = msg.toLowerCase().indexOf(searchquery[i].toLowerCase());
         if(index >= 0){
           msg = msg.slice(0,index) + "<b><font color='red'>"+searchquery[i] + "</font></b>" + msg.slice(index + searchquery[i].length);
         }
