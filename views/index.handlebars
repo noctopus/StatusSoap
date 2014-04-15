@@ -43,7 +43,6 @@
         }else if(element.text != null){
           // && element.text.indexOf(searchTerm)>0
           var words = searchTerm.split(",");
-          console.log(words, "HEY WODS");
           var ok = false;
           for(var i = 0; i < words.length; i++){
             if(element.text.indexOf(words[i]) > 0){
@@ -146,9 +145,9 @@
         response[i].text = response[i].description;
       }
       if(response[i].created_time == null){
-        response[i].time = "";
+        response[i].date = "";
       }else{
-        response[i].time=response[i].created_time;
+        response[i].date=response[i].created_time;
       }
       //response[i].dateStr = new Date(response[i].created_time).toUTCString();
 
