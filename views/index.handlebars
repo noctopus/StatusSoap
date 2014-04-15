@@ -11,6 +11,7 @@
 
 <div>
   <h1 data-bind = "text:userInfo().name"> </h1>
+  
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
@@ -102,7 +103,10 @@
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
+      if(response.hometown != null && response.hometown.name != null)
       response.origin = response.hometown.name;
+      else
+        response.origin = "Earth";
       console.log('Good to see you, ' + response.name + '.');
       console.log(response);
       viewModel.userInfo(response);
