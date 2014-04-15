@@ -1,8 +1,65 @@
 <html>
-<head></head>
-<body>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+
+<head>
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+      <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+<script type="text/javascript" href="./js/bootstrap.min.js"></script>
+</head>
+<body id ="app" class="container">
 <div id="fb-root"></div>
+
+<div>
+  <h1 data-bind = "text:userInfo().name"> </h1>
+  <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
+  <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
+</div>
+
+<input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
+<br>
+
+<div data-bind = "foreach:viewedPosts">
+  <div class="well">
+    <div data-bind = "text:from.name"></div>
+    <div data-bind = "text:created_time"></div>
+    <div data-bind = "highlight:text"></div>
+  </div>
+</div>
+
 <script>
+
+  var viewModel = {
+    userInfo : ko.observable({}),
+    userPosts : ko.observableArray([]),
+    searchQuery : ko.observable()
+    }
+
+    viewModel.viewedPosts = ko.computed(function(){
+      var searchTerm = this();
+      var newArr = [];
+      viewModel.userPosts().forEach(function(element){
+        if(searchTerm == null || searchTerm == ""){
+        }else if(element.text != null){
+          // && element.text.indexOf(searchTerm)>0
+          var words = searchTerm.split(",");
+          console.log(words, "HEY WODS");
+          var ok = false;
+          for(var i = 0; i < words.length; i++){
+            if(element.text.indexOf(words[i]) > 0){
+              ok = true;
+            }
+          }
+          if(newArr.indexOf(element) < 0 && ok == true){
+            newArr.push(element);
+          }
+        }
+      });
+      console.log(newArr);
+      return newArr;
+
+    }, viewModel.searchQuery)
+  ko.applyBindings(viewModel, document.getElementById("app"));
+
   window.fbAsyncInit = function() {
   FB.init({
     appId      : '854011474615306',
@@ -18,33 +75,15 @@
   FB.Event.subscribe('auth.authResponseChange', function(response) {
     // Here we specify what we do with the response anytime this event occurs. 
     if (response.status === 'connected') {
-      // The response object is returned with a status field that lets the app know the current
-      // login status of the person. In this case, we're handling the situation where they 
-      // have logged in to the app.
       testAPI();
     } else if (response.status === 'not_authorized') {
-      // In this case, the person is logged into Facebook, but not into the app, so we call
-      // FB.login() to prompt them to do so. 
-      // In real-life usage, you wouldn't want to immediately prompt someone to login 
-      // like this, for two reasons:
-      // (1) JavaScript created popup windows are blocked by most browsers unless they 
-      // result from direct interaction from people using the app (such as a mouse click)
-      // (2) it is a bad experience to be continually prompted to login upon page load.
       FB.login(function(response) {
-        // handle the response
         testAPI();
-        
-      }, {scope: 'user_status'});
+      }, {scope: 'user_status, read_stream'});
     } else {
-      // In this case, the person is not logged into Facebook, so we call the login() 
-      // function to prompt them to do so. Note that at this stage there is no indication
-      // of whether they are logged into the app. If they aren't then they'll see the Login
-      // dialog right after they log in to Facebook. 
-      // The same caveats as above apply to the FB.login() call here.
       FB.login(function(response) {
-        // handle the response
         testAPI();
-      }, {scope: 'user_status'});
+      }, {scope: 'user_status, read_stream'});
     }
   });
   };
@@ -63,8 +102,67 @@
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
+      response.origin = response.hometown.name;
       console.log('Good to see you, ' + response.name + '.');
+      console.log(response);
+      viewModel.userInfo(response);
+      getPosts();
     });
+  }
+
+  function getPosts() {
+    /*
+    FB.api('/me/feed', function(response) {
+        console.log(response);
+        displayPost(response.data);
+      }, {perms:'read_stream'})
+*/
+
+    FB.api('/me/posts', function(response) {
+      console.log(response);
+      displayPost(response.data);
+    }, {perms: 'read_stream'})
+  }
+
+  function displayPost(response) {
+    response = response.filter(function(element){return (element.type == "status" || element.type == "photo")})
+
+    for (var i = 0; i < response.length; i++) {
+      if (response[i].story != null) {
+        response[i].text = response[i].story;
+      }
+      else if (response[i].message != null) {
+        response[i].text = response[i].message;
+      }
+      //response[i].dateStr = new Date(response[i].created_time).toUTCString();
+
+    }
+    viewModel.userPosts(response);
+
+  }
+
+  ko.bindingHandlers.highlight = {
+    init : function(element, value){
+      var searchquery = viewModel.searchQuery().split(",");
+      var msg = value();
+      for(var i = 0; i < searchquery.length; i++){
+        var index = msg.indexOf(searchquery[i]);
+        if(index >= 0){
+          msg = msg.slice(0,index) + "<b><font color='red'>"+searchquery[i] + "</font></b>" + msg.slice(index + searchquery[i].length);
+        }
+      }
+      element.innerHTML = msg;
+
+
+    }
+  }
+
+  function highlight(container,what,spanClass) {
+    var content = container.innerHTML,
+        pattern = new RegExp('(>[^<.]*)(' + what + ')([^<.]*)','g'),
+        replaceWith = '$1<span ' + ( spanClass ? 'class="' + spanClass + '"' : '' ) + '">$2</span>$3',
+        highlighted = content.replace(pattern,replaceWith);
+    return (container.innerHTML = highlighted) !== content;
   }
 
 function logout(){
@@ -89,7 +187,6 @@ function getUserInfo() {
   present a graphical Login button that triggers the FB.login() function when clicked. -->
 
 <fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
-
 <button onclick="logout()">log out</button>
 
 
