@@ -23,6 +23,7 @@ app.use(express.bodyParser());
 
 //routes
 app.all('/', index.view);
+app.all('/fb', index.viewFB);
 
 //set environment ports and start application
 app.set('port', process.env.PORT || 3000);
