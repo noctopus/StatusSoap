@@ -126,7 +126,7 @@
       console.log(response);
       FB.api("/me/feed", function(response2){
         var data = response.data.concat(response2.data);
-        displayPost(response.data);
+        displayPost(data);
       }, {perms : 'read_stream'});
     }, {perms: 'read_stream'})
   }
