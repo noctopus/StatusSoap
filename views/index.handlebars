@@ -40,11 +40,10 @@
       viewModel.userPosts().forEach(function(element){
         if(searchTerm == null || searchTerm == ""){
         }else if(element.text != null){
-          // && element.text.indexOf(searchTerm)>0
           var words = searchTerm.split(",");
           var ok = false;
           for(var i = 0; i < words.length; i++){
-            if(element.text.indexOf(words[i]) > 0){
+            if(element.text.toLowerCase().indexOf(words[i].toLowerCase()) > 0){
               ok = true;
             }
           }
