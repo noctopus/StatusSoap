@@ -148,6 +148,9 @@
       if(response[i].created_time!= null){
         response[i].viewedTime = response[i].created_time;
       }
+      if(response[i].updated_time != null){
+        response[i].viewedTime = response[i].updated_time;
+      }
 
       //response[i].dateStr = new Date(response[i].created_time).toUTCString();
 
