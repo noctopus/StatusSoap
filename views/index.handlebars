@@ -16,18 +16,28 @@ overflow:scroll;
 </style>
 </head>
 <body id ="app" class="container canvas">
-<div id="fb-root"></div>
+  <div id="login">
+    <br>
+    <div id="fb-root"></div>
+    <!-- ko if:fbLoggedin -->
+    <fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button>
+    <!-- /ko --> 
+    <!-- if !fbLoggedin()-->
+    <button class="btn" onclick="logout()">log out from Facebook</button>
+    <!-- /ko -->
+    <a href="/twitter/auth"><img src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png" /></a>
+  </div>
 
-<!-- ko if:tweets().length > 0 -->
-<a href="/twitter/auth">Log In to Twitter</a>
-<!-- /ko -->
-<div>
-  <br><br>
+
+<br>
+<div data-bind="if:fbLoggedin">
   <h1 data-bind = "text:userInfo().name"> </h1>
-  
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
+<div data-bind="if:!fbLoggedin()">
+  <h1>Unable to connect to Facebook. Please log in.</h1>
+  </div>
 <input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
 <br>
 <!-- ko if:userPosts().length > 0-->
@@ -74,7 +84,8 @@ overflow:scroll;
     userInfo : ko.observable({}),
     userPosts : ko.observableArray([]),
     searchQuery : ko.observable(),
-    tweets :  ko.observableArray([])
+    tweets :  ko.observableArray([]),
+    fbLoggedin : ko.observable(false)
     }
 
 
@@ -148,10 +159,12 @@ overflow:scroll;
     } else if (response.status === 'not_authorized') {
       FB.login(function(response) {
         testAPI();
+        viewModel.fbLoggedin(true)
       }, {scope: 'user_status, read_stream'});
     } else {
       FB.login(function(response) {
         testAPI();
+        viewModel.fbLoggedin(true)
       }, {scope: 'user_status, read_stream'});
     }
   });
@@ -254,7 +267,9 @@ overflow:scroll;
   }
 
 function logout(){
-  FB.logout(function(response){});
+  FB.logout(function(response){
+    viewModel.fbLoggedin(false)
+  });
 }
 
 function getUserInfo() {
@@ -274,8 +289,6 @@ function getUserInfo() {
   Below we include the Login Button social plugin. This button uses the JavaScript SDK to
   present a graphical Login button that triggers the FB.login() function when clicked. -->
 
-<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
-<button onclick="logout()">log out</button>
 
 
 
