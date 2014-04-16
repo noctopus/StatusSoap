@@ -18,6 +18,9 @@ overflow:scroll;
 <body id ="app" class="container canvas">
 <div id="fb-root"></div>
 
+<!-- ko if:tweets().length > 0 -->
+<a href="/twitter/auth">Log In to Twitter</a>
+<!-- /ko -->
 <div>
   <br><br>
   <h1 data-bind = "text:userInfo().name"> </h1>
@@ -25,9 +28,6 @@ overflow:scroll;
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
-<!-- ko if:tweets().length > 0 -->
-<a href="/twitter/auth">Log In to Twitter</a>
-<!-- /ko -->
 <input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
 <br>
 <!-- ko if:userPosts().length > 0-->
