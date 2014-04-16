@@ -12,30 +12,59 @@
 <div id="fb-root"></div>
 
 <div>
+  <br><br>
   <h1 data-bind = "text:userInfo().name"> </h1>
   
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
 
+<a href="/twitter/auth">Log In to Twitter</a>
+
 <input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
 <br>
-
+<h1>FaceBook Posts </h1>
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
+
     <div data-bind = "text:from.name"></div>
       <div data-bind="text : viewedTime"></div>
     <div data-bind = "highlight:text"></div>
   </div>
 </div>
+<h1>Twitter Tweets </h1>
+<div data-bind="foreach: viewedTweets">
+  <div class="well">
+    <h2 data-bind="highlight : words"></h2>
+    <div data-bind="text : name"></div>
+    <div data-bind="text : date"><div>
+    
+  </div>
+  </div>
 
 <script>
+  function replaceAll(find, replace, str) {
+    return str.replace(new RegExp(find, 'g'), replace);
+  }
+  var tweets = JSON.parse(replaceAll("&quot;", '"', "{{tweets}}")).map(function(e){
+    return {name : e.user.name, date : e.user.created_at, words : e.text}
+  })
+
+  $.get("/twitter/tweets", function(response){
+    var tweets = JSON.parse(response).map(function(e){
+    return {name : e.user.name, date : e.user.created_at, words : e.text}
+  })
+    viewModel.tweets(tweets);
+  })
 
   var viewModel = {
     userInfo : ko.observable({}),
     userPosts : ko.observableArray([]),
-    searchQuery : ko.observable()
+    searchQuery : ko.observable(),
+    tweets :  ko.observableArray([])
     }
+
+
 
     viewModel.viewedPosts = ko.computed(function(){
       var searchTerm = this();
@@ -59,8 +88,34 @@
       return newArr;
 
     }, viewModel.searchQuery)
-  ko.applyBindings(viewModel, document.getElementById("app"));
 
+    viewModel.viewedTweets = ko.computed(function(){
+      var searchTerm = this();
+      var newArr = [];
+      viewModel.tweets().forEach(function(element){
+        if(searchTerm == null || searchTerm == ""){
+        
+        }else if(element.words != null){
+          var words = searchTerm.split(",");
+          var ok = false;
+          for(var i = 0; i < words.length; i++){
+            console.log(element.words.toLowerCase(), words[i].toLowerCase(), element.words.toLowerCase().indexOf(words[i].toLowerCase()));
+            if(element.words.toLowerCase().indexOf(words[i].toLowerCase()) >= 0){
+              ok = true;
+            }
+          }
+          if(ok == true){
+            newArr.push(element);
+          }
+        }
+      });
+      console.log(newArr, "NEW TWEETS");
+      return newArr;
+
+    }, viewModel.searchQuery)
+
+
+  ko.applyBindings(viewModel, document.getElementById("app"));
   window.fbAsyncInit = function() {
   FB.init({
     appId      : '854011474615306',
