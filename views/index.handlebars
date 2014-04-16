@@ -10,8 +10,7 @@
 <style>
 .pages 
 {
-width:150px;
-height:150px;
+height:300px;
 overflow:scroll;
 }
 </style>
@@ -35,10 +34,10 @@ overflow:scroll;
 <h1>FaceBook Posts </h1>
 <div class="pages" data-bind = "foreach:viewedPosts">
   <div class="well">
-
+<h2 data-bind = "highlight:text"></h2>
     <div data-bind = "text:from.name"></div>
       <div data-bind="text : viewedTime"></div>
-    <div data-bind = "highlight:text"></div>
+    
   </div>
 </div>
 <!-- /ko -->
