@@ -10,7 +10,7 @@
 <style>
 .pages 
 {
-height:300px;
+height:200px;
 overflow:scroll;
 }
 </style>
@@ -32,7 +32,8 @@ overflow:scroll;
 <br>
 <!-- ko if:userPosts().length > 0-->
 <h1>FaceBook Posts </h1>
-<div class="pages" data-bind = "foreach:viewedPosts">
+<div class="pages">
+<div data-bind = "foreach:viewedPosts">
   <div class="well">
 <h2 data-bind = "highlight:text"></h2>
     <div data-bind = "text:from.name"></div>
@@ -40,8 +41,10 @@ overflow:scroll;
     
   </div>
 </div>
+</div>
 <!-- /ko -->
 <h1>Twitter Tweets </h1>
+<div class='pages'>
 <div class="pages" data-bind="foreach: viewedTweets">
   <div class="well">
     <h2 data-bind="highlight : words"></h2>
@@ -50,7 +53,7 @@ overflow:scroll;
     
   </div>
   </div>
-
+</div>
 <script>
   function replaceAll(find, replace, str) {
     return str.replace(new RegExp(find, 'g'), replace);
