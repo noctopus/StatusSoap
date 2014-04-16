@@ -4,8 +4,9 @@
 <head>
       <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
       <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+      <link rel="stylesheet" type="text/css" href="css/fbstrap.css"></link>
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-      <link rel="stylesheet" href="css/fbstrap.css"></link>
+      
 <script type="text/javascript" href="./js/bootstrap.min.js"></script>
 <style>
 .pages 
@@ -42,14 +43,15 @@ overflow:scroll;
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
 
-<div id="searchbar">
-<input type="text" class="form-control" placeholder="Enter a list of words to search for, separated by commas" data-bind="value:searchQuery">
+<div id="searchbar" class="row">
+  <div class="col-md-10"><input type="text" class="form-control" placeholder="Enter a list of words to search for, separated by commas" data-bind="value:searchQuery"></div>
+  <div class="col-md-2"><button type="submit" class="btn btn-info">Search</button></div>
 </div>
 <hr>
 
-<div data-bind="if:!fbLoggedin()">
+<div data-bind="if:userPostos().length == 0">
   <h2>Unable to connect to Facebook. Please log in.</h2>
-  </div>
+</div>
 <!-- ko if:userPosts().length > 0-->
 <h2>FaceBook Posts </h2>
 <div class="pages">
