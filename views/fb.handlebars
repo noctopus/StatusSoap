@@ -5,6 +5,8 @@
       <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
       <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+      
+      <link rel="stylesheet" type="text/css" href="css/fbstrap.css">
 <script type="text/javascript" href="./js/bootstrap.min.js"></script>
 </head>
 <body id ="app" class="container canvas">
@@ -17,12 +19,11 @@
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
-<!-- ko if:tweets().length > 0 -->
+
 <a href="/twitter/auth">Log In to Twitter</a>
-<!-- /ko -->
+
 <input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
 <br>
-<!-- ko if:userPosts().length > 0-->
 <h1>FaceBook Posts </h1>
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
@@ -32,7 +33,6 @@
     <div data-bind = "highlight:text"></div>
   </div>
 </div>
-<!-- /ko -->
 <h1>Twitter Tweets </h1>
 <div data-bind="foreach: viewedTweets">
   <div class="well">
