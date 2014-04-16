@@ -46,7 +46,7 @@
   function replaceAll(find, replace, str) {
     return str.replace(new RegExp(find, 'g'), replace);
   }
-  var tweets = JSON.parse(replaceAll("&quot;", '"', "{{tweets}}")).map(function(e){
+  var tweets = JSON.parse(replaceAll("&quot;", '"', '{{tweets}}')).map(function(e){
     return {name : e.user.name, date : e.user.created_at, words : e.text}
   })
 
