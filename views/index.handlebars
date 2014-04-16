@@ -35,7 +35,7 @@ overflow:scroll;
 <div class="pages">
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
-<h2 data-bind = "highlight:text"></h2>
+<h3 data-bind = "highlight:text"></h3>
     <div data-bind = "text:from.name"></div>
       <div data-bind="text : viewedTime"></div>
     
@@ -43,11 +43,12 @@ overflow:scroll;
 </div>
 </div>
 <!-- /ko -->
+<br>
 <h1>Twitter Tweets </h1>
 <div class='pages'>
 <div class="pages" data-bind="foreach: viewedTweets">
   <div class="well">
-    <h2 data-bind="highlight : words"></h2>
+    <h3 data-bind="highlight : words"></h3>
     <div data-bind="text : name"></div>
     <div data-bind="text : date"><div>
     
