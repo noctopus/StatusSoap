@@ -26,7 +26,22 @@ exports.view = function(req, res) {
 }
 
 exports.viewFB = function(req, res){
-	res.render("fb");
+	if(req.query.oauth_token != null && req.query.oauth_verifier != null){
+
+		twitter.getAccessToken(req.session.token, req.session.secret, req.query.oauth_verifier,
+			function(error, accessToken, accessTokenSecret, results){
+			
+				req.session.oauth_verifier = req.query.oauth_verifier;
+				req.session.accessToken = accessToken;
+				req.session.accessSecret = accessTokenSecret;
+				console.log(results);
+			
+			res.render("fb", {tweets : "[]"});
+			});
+	}else{
+			res.render("fb", {tweets : "[]"});
+		}
+
 }
 
 exports.deleteImage = function(req, res) {

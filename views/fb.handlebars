@@ -6,43 +6,78 @@
       <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
       
-      <link rel="stylesheet" type="text/css" href="css/fbstrap.css">
 <script type="text/javascript" href="./js/bootstrap.min.js"></script>
+<style>
+.pages 
+{
+height:200px;
+overflow:scroll;
+}
+</style>
 </head>
 <body id ="app" class="container canvas">
-<div id="fb-root"></div>
+  <div class="row" style="margin-top:10px">
+    <div id="title" class="col-md-8">
+      <h1><strong>StatuSoap</strong><br>
+        <small>Check your Facebook and Twitter for dirty words</small></h1>
+    </div>
+    <div id="login" class="col-md-4 text-right">
+      <div id="fb-root"></div>
+      <!-- ko if:!fbLoggedin() -->
+      <fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button>
+      <!-- /ko --> 
+      <br>
+      <!-- ko if:fbLoggedin()-->
+      <button class="btn" onclick="logout()">log out from Facebook</button>
+      <!-- /ko -->
+      <a href="/twitter/auth"><img src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png" /></a>
+    </div>
+  </div>
 
-<div>
-  <br><br>
-  <h1 data-bind = "text:userInfo().name"> </h1>
-  
+
+<br>
+<div data-bind="if:fbLoggedin">
+  <h2 data-bind = "text:userInfo().name"> </h2>
   <h3 data-bind = "text:userInfo().gender  + ' from ' + userInfo().origin"> </h3>
   <blockquote data-bind = "text:userInfo().quotes"> </blockquote>
 </div>
 
-<a href="/twitter/auth">Log In to Twitter</a>
+<div id="searchbar">
+<input type="text" class="form-control" placeholder="Enter a list of words to search for, separated by commas" data-bind="value:searchQuery">
+</div>
+<hr>
 
-<input type="text" class="form-control" placeholder="Text input" data-bind="value:searchQuery">
-<br>
-<h1>FaceBook Posts </h1>
+<div data-bind="if:!fbLoggedin()">
+  <h2>Unable to connect to Facebook. Please log in.</h2>
+  </div>
+<!-- ko if:userPosts().length > 0-->
+<h2>FaceBook Posts </h2>
+<div class="pages">
 <div data-bind = "foreach:viewedPosts">
   <div class="well">
-
+<h3 data-bind = "highlight:text"></h3>
     <div data-bind = "text:from.name"></div>
       <div data-bind="text : viewedTime"></div>
-    <div data-bind = "highlight:text"></div>
-  </div>
-</div>
-<h1>Twitter Tweets </h1>
-<div data-bind="foreach: viewedTweets">
-  <div class="well">
-    <h2 data-bind="highlight : words"></h2>
-    <div data-bind="text : name"></div>
-    <div data-bind="text : date"><div>
     
   </div>
+</div>
+</div>
+<!-- /ko -->
+<hr>
+<div data-bind="if:!twitterLoggedin()"><h2>Cannot find any tweets. Are you logged in?</h2>
+</div>
+<div data-bind="if:twitterLoggedin">
+<h2>Twitter Tweets </h2>
+<div class='pages'>
+<div class="pages" data-bind="foreach: viewedTweets">
+  <div class="well">
+    <h3 data-bind="highlight : words"></h3>
+    <div data-bind="text : name"></div>
+    <div data-bind="text : date"><div>
   </div>
-
+  </div>
+</div>
+</div>
 <script>
   function replaceAll(find, replace, str) {
     return str.replace(new RegExp(find, 'g'), replace);
@@ -52,17 +87,29 @@
   })
 
   $.get("/twitter/tweets", function(response){
-    var tweets = JSON.parse(response).map(function(e){
-    return {name : e.user.name, date : e.user.created_at, words : e.text}
-  })
-    viewModel.tweets(tweets);
+    try{
+      var tweets = JSON.parse(response).map(function(e){
+        return {name : e.user.name, date : e.user.created_at, words : e.text}
+      })  
+      viewModel.tweets(tweets);
+      if(tweets.length == 0){
+        viewModel.twitterLoggedin(false)
+      }else{
+        viewModel.twitterLoggedin(true)
+      }
+      console.log(tweets, "CURRENT TWEETS");
+    }catch(e){
+      viewModel.twitterLoggedin(false);
+    }
   })
 
   var viewModel = {
     userInfo : ko.observable({}),
     userPosts : ko.observableArray([]),
-    searchQuery : ko.observable(),
-    tweets :  ko.observableArray([])
+    searchQuery : ko.observable("party,alcohol,drink,fuck,shit,ass,bitch,mofo"),
+    tweets :  ko.observableArray([]),
+    fbLoggedin : ko.observable(false),
+    twitterLoggedin : ko.observable(false)
     }
 
 
@@ -136,10 +183,12 @@
     } else if (response.status === 'not_authorized') {
       FB.login(function(response) {
         testAPI();
+        viewModel.fbLoggedin(true)
       }, {scope: 'user_status, read_stream'});
     } else {
       FB.login(function(response) {
         testAPI();
+        viewModel.fbLoggedin(true)
       }, {scope: 'user_status, read_stream'});
     }
   });
@@ -242,7 +291,9 @@
   }
 
 function logout(){
-  FB.logout(function(response){});
+  FB.logout(function(response){
+    viewModel.fbLoggedin(false)
+  });
 }
 
 function getUserInfo() {
@@ -262,8 +313,6 @@ function getUserInfo() {
   Below we include the Login Button social plugin. This button uses the JavaScript SDK to
   present a graphical Login button that triggers the FB.login() function when clicked. -->
 
-<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
-<button onclick="logout()">log out</button>
 
 
 
