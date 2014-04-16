@@ -11,22 +11,15 @@ exports.view = function(req, res) {
 
 		twitter.getAccessToken(req.session.token, req.session.secret, req.query.oauth_verifier,
 			function(error, accessToken, accessTokenSecret, results){
-
+			
 				req.session.oauth_verifier = req.query.oauth_verifier;
 				req.session.accessToken = accessToken;
 				req.session.accessSecret = accessTokenSecret;
-				twitter.getTimeline("home", {}, req.session.accessToken, req.session.accessSecret, function(error, data, response){
-					console.log(error, data, response);
-					res.render("index", {tweets : JSON.stringify(data)});
-				});
+				console.log(results);
+			
+			res.render("index", {tweets : "[]"});
 			});
-
-	}else if (req.session.accessToken != null && req.session.accessSecret != null){
-				twitter.getTimeline("home", {}, req.session.accessToken, req.session.accessSecret, function(error, data, response){
-					console.log(error, data, response);
-					res.render("index", {tweets : JSON.stringify(data)});
-				});
-		}else{
+	}else{
 			res.render("index", {tweets : "[]"});
 		}
 

@@ -45,11 +45,19 @@ app.get("/twitter/auth", function(req,res){
     	}
 	});
 });
+app.get('/twitter/tweets', function(req, res) {
+	//console.log(req.session, "SESSION")
+					twitter.getTimeline("user_timeline", {}, 
+						req.session.accessToken, req.session.accessSecret, function(error, data, response){
+					req.session.tweets = data;
+					res.end(JSON.stringify(data));
+				});
+})
 
 
 
 //set environment ports and start application
-app.set('port', process.env.PORT || 8000);
+app.set('port', process.env.PORT || 3001);
 http.createServer(app).listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port'));
 });
